@@ -1,0 +1,50 @@
+import java.sql.*;
+import java.util.Scanner;
+
+public class AddSalesData {
+    public static void main(String[] args) {
+
+        Scanner input = new Scanner(System.in);
+
+        try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+
+            Connection connection = DriverManager.getConnection(
+                    "jdbc:sqlserver://localhost:1433;databaseName=ProductDB;encrypt=true;trustServerCertificate=true",
+                    "sa",
+                    "StrongPass@123");
+
+            System.out.print("Sale Number : ");
+            int saleNo = input.nextInt();
+
+            System.out.print("Product ID : ");
+            int productId = input.nextInt();
+
+            System.out.print("Quantity Sold : ");
+            int quantity = input.nextInt();
+
+            System.out.print("Sale Date (yyyy-mm-dd) : ");
+            String saleDate = input.next();
+
+            String query = "INSERT INTO Sales VALUES(?,?,?,?)";
+
+            PreparedStatement pstmt =
+                    connection.prepareStatement(query);
+
+            pstmt.setInt(1, saleNo);
+            pstmt.setInt(2, productId);
+            pstmt.setInt(3, quantity);
+            pstmt.setDate(4, Date.valueOf(saleDate));
+
+            int rowsInserted = pstmt.executeUpdate();
+
+            System.out.println(rowsInserted + " Sales Record Saved");
+
+            pstmt.close();
+            connection.close();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+}
