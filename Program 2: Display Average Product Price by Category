@@ -21,7 +21,6 @@ public class CategoryAveragePrice {
             ResultSet resultSet = pstmt.executeQuery();
 
             System.out.println("CATEGORY\tAVERAGE PRICE");
-            System.out.println("--------------------------------");
 
             while (resultSet.next()) {
                 System.out.println(
