@@ -1,0 +1,43 @@
+import java.sql.*;
+import java.util.Scanner;
+
+public class UpdateProductDetails {
+    public static void main(String[] args) {
+
+        Scanner input = new Scanner(System.in);
+
+        try {
+            System.out.print("Enter Product ID: ");
+            int productId = input.nextInt();
+
+            System.out.print("Enter Updated Product Name: ");
+            String productName = input.next();
+
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+
+            Connection connection = DriverManager.getConnection(
+                    "jdbc:sqlserver://localhost:1433;databaseName=ProductDB;encrypt=true;trustServerCertificate=true",
+                    "sa",
+                    "StrongPass@123");
+
+            String sql = "UPDATE Product SET ProdName=? WHERE ProdId=?";
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+
+            pstmt.setString(1, productName);
+            pstmt.setInt(2, productId);
+
+            int result = pstmt.executeUpdate();
+
+            if (result > 0)
+                System.out.println("Product Updated Successfully");
+            else
+                System.out.println("No Matching Product Found");
+
+            pstmt.close();
+            connection.close();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+}
