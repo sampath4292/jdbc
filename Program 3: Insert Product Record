@@ -1,0 +1,50 @@
+import java.sql.*;
+import java.util.Scanner;
+
+public class AddNewProduct {
+    public static void main(String[] args) {
+
+        Scanner input = new Scanner(System.in);
+
+        try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+
+            Connection connection = DriverManager.getConnection(
+                    "jdbc:sqlserver://localhost:1433;databaseName=ProductDB;encrypt=true;trustServerCertificate=true",
+                    "sa",
+                    "StrongPass@123");
+
+            System.out.print("Product ID : ");
+            int id = input.nextInt();
+
+            System.out.print("Product Name : ");
+            String name = input.next();
+
+            System.out.print("Price : ");
+            double amount = input.nextDouble();
+
+            System.out.print("Category ID : ");
+            int categoryId = input.nextInt();
+
+            String insertQuery = "INSERT INTO Product VALUES(?,?,?,?)";
+
+            PreparedStatement pstmt =
+                    connection.prepareStatement(insertQuery);
+
+            pstmt.setInt(1, id);
+            pstmt.setString(2, name);
+            pstmt.setDouble(3, amount);
+            pstmt.setInt(4, categoryId);
+
+            int count = pstmt.executeUpdate();
+
+            System.out.println(count + " Product Added Successfully");
+
+            pstmt.close();
+            connection.close();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+}
