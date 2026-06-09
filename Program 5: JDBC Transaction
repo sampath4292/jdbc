@@ -1,0 +1,56 @@
+import java.sql.*;
+
+public class SalesTransaction {
+    public static void main(String[] args) {
+
+        try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+
+            Connection connection = DriverManager.getConnection(
+                    "jdbc:sqlserver://localhost:1433;databaseName=ProductDB;encrypt=true;trustServerCertificate=true",
+                    "sa",
+                    "StrongPass@123");
+
+            connection.setAutoCommit(false);
+
+            try {
+
+                String sql =
+                        "INSERT INTO Sales VALUES(?,?,?,GETDATE())";
+
+                PreparedStatement stmt1 =
+                        connection.prepareStatement(sql);
+
+                stmt1.setInt(1, 10);
+                stmt1.setInt(2, 101);
+                stmt1.setInt(3, 2);
+
+                stmt1.executeUpdate();
+
+                PreparedStatement stmt2 =
+                        connection.prepareStatement(sql);
+
+                stmt2.setInt(1, 11);
+                stmt2.setInt(2, 102);
+                stmt2.setInt(3, 1);
+
+                stmt2.executeUpdate();
+
+                connection.commit();
+
+                System.out.println("Transaction Completed Successfully");
+
+            } catch (Exception e) {
+
+                connection.rollback();
+
+                System.out.println("Transaction Cancelled - Rollback Executed");
+            }
+
+            connection.close();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+}
